@@ -1,0 +1,22 @@
+{
+  "name": "pennappsxiv",
+  "version": "1.0.0",
+  "description": "node server to handle multiplayer data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/utk9/PennAppsXIV-Node.git"
+  },
+  "author": "Utkarsh Lamba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/utk9/PennAppsXIV-Node/issues"
+  },
+  "homepage": "https://github.com/utk9/PennAppsXIV-Node#readme",
+  "dependencies": {
+    "socket.io": "^1.4.8"
+  }
+}
