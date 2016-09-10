@@ -23,9 +23,24 @@ function handler (req, res) {
 }
 
 io.on('connection', function (socket) {
-	console.log("new connection");
-  socket.emit('hello_new_user');
-  socket.on('test_client_event', function () {
-    console.log("Client sent test event.");
-  });
+	console.log("connection");
+	socket.emit("id_assignment", {id: 123});
+	socket.on("new_player_joined", function () {
+		console.log("new_player joined");
+		var myId = Date.now();
+		socket.emit("id_assignment", {id: myId});
+		socket.broadcast.emit("new_player", {
+			id: myId,
+			location_x: 50,
+			location_y: 50,
+			location_z: 50,
+			rotation_x: 45,
+			rotation_y: 45,
+			rotation_z: 45,
+		});
+	});
+	socket.on("melissa_mouse_down", function() {
+		console.log("FIREEE")
+	});
+  
 });
