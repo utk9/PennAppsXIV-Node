@@ -24,7 +24,7 @@ function handler (req, res) {
 
 function generateRandomPlayerLocation(min, max, id) {
 	return {
-		id: id,
+		player_id: id,
 		location_x:  Math.floor(Math.random() * (max - min + 1)) + min,
 		location_y:  Math.floor(Math.random() * (max - min + 1)) + min,
 		location_z:  Math.floor(Math.random() * (max - min + 1)) + min,
@@ -48,10 +48,13 @@ io.on('connection', function (socket) {
 		socket.broadcast.emit("shot_fired", data);
 	}); 
 
-	socket.on("player_disconnect", function () {
-		socket.broadcast.emit("player_leave", {id: id});
+	socket.on("disconnect", function () {
+		console.log("Player " + id + " disconnected!");
+    socket.broadcast.emit("player_leave", {player_id: id});
 	});
 	socket.on("location_update", function(data) {
+    console.log("DATA: " + JSON.stringify(data));
+    console.log("Update event for id " + data.player_id);
 		socket.broadcast.emit("location_update", data);
 	});
 	socket.on("player_health_update", function(data) {
