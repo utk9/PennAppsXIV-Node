@@ -63,7 +63,10 @@ io.on('connection', function (socket) {
 			io.emit("player_respawn", generateRandomPlayerLocation(0, 100, id));
 		}, 1000);
 	})
-	setInterval(function() {
-		io.emit("ammo_spawn", generateRandomPlayerLocation(0, 100));
-	}, 7000);
 });
+
+setInterval(function() {
+		var ammo = generateRandomPlayerLocation(0, 100);
+		ammo.amount = Math.floor(Math.random() * 4) + 3
+		io.emit("ammo_spawn", ammo);
+	}, 7000);
