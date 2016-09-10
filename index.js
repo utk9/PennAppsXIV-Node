@@ -7,7 +7,7 @@ app.listen(8080, function() {
 });
 
 function handler (req, res) {
-  if (req.method == 'GET' && req.url == '/'){
+	if (req.method == 'GET' && req.url == '/'){
 		res.write("Index route");
 		res.statusCode = 200;
 		res.end();
@@ -22,21 +22,48 @@ function handler (req, res) {
 	}
 }
 
+function generateRandomPlayerLocation(min, max, id) {
+	return {
+		id: id,
+		location_x:  Math.floor(Math.random() * (max - min + 1)) + min,
+		location_y:  Math.floor(Math.random() * (max - min + 1)) + min,
+		location_z:  Math.floor(Math.random() * (max - min + 1)) + min,
+		rotation_x:  0,
+		rotation_y:  0,
+		rotation_z:  0,
+	}
+}
+
 io.on('connection', function (socket) {
 	console.log("New Player!");
-	var id = Date.now(); // TODO: Make this actually give an ID
-  socket.emit("id_assignment", {id: id});
-		console.log("Assigned the player id " + id);
-		socket.broadcast.emit("player_join", {
-			id: id,
-			location_x: 50,
-			location_y: 50,
-			location_z: 50,
-			rotation_x: 45,
-			rotation_y: 45,
-			rotation_z: 45,
-		});
-	socket.on("shot_fired", function() {
-		console.log("FIREEE")
+
+	//generate id for players
+	var id = Date.now().toString(); 
+	var beginningPosition = generateRandomPlayerLocation(0, 100, id);
+	console.log("New player", beginningPosition);
+	socket.emit("player_initialize", beginningPosition);
+	socket.broadcast.emit("player_join", beginningPosition);
+
+	socket.on("shot_fired", function(data) {
+		socket.broadcast.emit("shot_fired", data);
 	}); 
+
+	socket.on("player_disconnect", function () {
+		socket.broadcast.emit("player_leave", {id: id});
+	});
+	socket.on("location_update", function(data) {
+		socket.broadcast.emit("location_update", data);
+	});
+	socket.on("player_health_update", function(data) {
+		socket.broadcast.emit("player_health_update", data);
+	});
+	socket.on("player_death", function (data) {
+		socket.broadcast.emit("player_death", data);
+		setTimeout(function(){
+			io.emit("player_respawn", generateRandomPlayerLocation(0, 100, id));
+		}, 1000);
+	})
+	setInterval(function() {
+		io.emit("ammo_spawn", generateRandomPlayerLocation(0, 100));
+	}, 7000);
 });
