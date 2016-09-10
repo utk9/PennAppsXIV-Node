@@ -23,14 +23,12 @@ function handler (req, res) {
 }
 
 io.on('connection', function (socket) {
-	console.log("connection");
-	socket.emit("id_assignment", {id: 123});
-	socket.on("new_player_joined", function () {
-		console.log("new_player joined");
-		var myId = Date.now();
-		socket.emit("id_assignment", {id: myId});
-		socket.broadcast.emit("new_player", {
-			id: myId,
+	console.log("New Player!");
+	var id = Date.now(); // TODO: Make this actually give an ID
+  socket.emit("id_assignment", {id: id});
+		console.log("Assigned the player id " + id);
+		socket.broadcast.emit("player_join", {
+			id: id,
 			location_x: 50,
 			location_y: 50,
 			location_z: 50,
@@ -38,9 +36,7 @@ io.on('connection', function (socket) {
 			rotation_y: 45,
 			rotation_z: 45,
 		});
-	});
-	socket.on("melissa_mouse_down", function() {
+	socket.on("shot_fired", function() {
 		console.log("FIREEE")
-	});
-  
+	}); 
 });
