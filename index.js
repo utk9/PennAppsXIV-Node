@@ -36,9 +36,16 @@ function generateRandomPlayerLocation(min, max, id) {
 
 var generateAsteroids = function(radius, numAsteroids) {
   var NUM_ASTEROID_TYPES = 5;
+  var EMPTY_RADIUS = 115;
   var locations = [];
   var randVal = function() {
-    return Math.floor(Math.random() * radius) - radius / 2;
+    var val = Math.floor(Math.random() * radius) - radius / 2;
+    if (val > -EMPTY_RADIUS && val <= 0){
+      val -= EMPTY_RADIUS
+    } else if (val > 0 && val < EMPTY_RADIUS){
+      val += EMPTY_RADIUS
+    }
+    return val;
   }
   for (var i = 0; i < numAsteroids; i++){
     locations.push({
