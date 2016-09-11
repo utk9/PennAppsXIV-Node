@@ -41,9 +41,9 @@ var generateAsteroids = function(radius, numAsteroids) {
   var randVal = function() {
     var val = Math.floor(Math.random() * radius) - radius / 2;
     if (val > -EMPTY_RADIUS && val <= 0){
-      val -= EMPTY_RADIUS
+      return randVal();
     } else if (val > 0 && val < EMPTY_RADIUS){
-      val += EMPTY_RADIUS
+      return randVal();
     }
     return val;
   }
