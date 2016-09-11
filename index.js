@@ -15,7 +15,7 @@ function handler (req, res) {
 		res.write("about route");
 		res.statusCode = 200;
 		res.end();
-	} 
+	}
 	else{
 		res.statusCode = 404;
 		res.end("Not Found");
@@ -63,9 +63,9 @@ var asteroids = generateAsteroids(3000, 1500);
 
 io.on('connection', function (socket) {
 	// Sets an ID and random position
-	var id = Date.now().toString(); 
+	var id = Date.now().toString();
   var beginningPosition = generateRandomPlayerLocation(0, 100, id);
-	console.log("New player", beginningPosition); 
+	console.log("New player", beginningPosition);
 	socket.emit("player_initialize", beginningPosition);
 	// Gives the player information about the asteroids on the map
   socket.emit("set_asteroids", {data: asteroids});//{data: asteroids});
@@ -75,7 +75,7 @@ io.on('connection', function (socket) {
   socket.on("shot_fired", function(data) {
 		console.log("Received Shot Fired!");
     socket.broadcast.emit("shot_fired", data);
-	}); 
+	});
 
 	socket.on("disconnect", function () {
 		console.log("Player " + id + " disconnected!");
@@ -92,6 +92,9 @@ io.on('connection', function (socket) {
 		setTimeout(function(){
 			io.emit("player_respawn", generateRandomPlayerLocation(0, 100, id));
 		}, 1000);
+	})
+	socket.on("game_won", function() {
+		io.emit("game_won");
 	})
 });
 
