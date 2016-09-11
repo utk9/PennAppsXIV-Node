@@ -53,7 +53,6 @@ io.on('connection', function (socket) {
     socket.broadcast.emit("player_leave", {player_id: id});
 	});
 	socket.on("location_update", function(data) {
-		console.log("ID sent", data.player_id);
 		socket.broadcast.emit("location_update", data);
 	});
 	socket.on("player_health_update", function(data) {
