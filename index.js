@@ -59,7 +59,7 @@ var generateAsteroids = function(radius, numAsteroids) {
 };
 
 // TODO: Generate this every time a game starts when this feature has been implemented
-var asteroids = generateAsteroids(1000, 5000);
+var asteroids = generateAsteroids(3000, 1500);
 
 io.on('connection', function (socket) {
 	// Sets an ID and random position
