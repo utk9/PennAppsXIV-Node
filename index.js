@@ -34,18 +34,40 @@ function generateRandomPlayerLocation(min, max, id) {
 	}
 }
 
+var generateAsteroids = function(radius, numAsteroids) {
+  var NUM_ASTEROID_TYPES = 5;
+  var locations = [];
+  var randVal = function() {
+    return Math.floor(Math.random() * radius) - radius / 2;
+  }
+  for (var i = 0; i < numAsteroids; i++){
+    locations.push({
+      location_x: randVal(),
+      location_y: randVal(),
+      location_z: randVal(),
+      type: Math.floor(Math.random() * NUM_ASTEROID_TYPES)
+    });
+  }
+  return locations;
+};
+
+// TODO: Generate this every time a game starts when this feature has been implemented
+var asteroids = generateAsteroids(1000, 5000);
+
 io.on('connection', function (socket) {
-	console.log("New Player!");
-
-	//generate id for players
+	// Sets an ID and random position
 	var id = Date.now().toString(); 
-	var beginningPosition = generateRandomPlayerLocation(0, 100, id);
-	console.log("New player", beginningPosition);
+  var beginningPosition = generateRandomPlayerLocation(0, 100, id);
+	console.log("New player", beginningPosition); 
 	socket.emit("player_initialize", beginningPosition);
-	socket.broadcast.emit("player_join", beginningPosition);
-
-	socket.on("shot_fired", function(data) {
-		socket.broadcast.emit("shot_fired", data);
+	// Gives the player information about the asteroids on the map
+  socket.emit("set_asteroids", {data: asteroids});//{data: asteroids});
+  // Lets everyone know that a player joined
+  socket.broadcast.emit("player_join", beginningPosition);
+	// Sets up the listeners
+  socket.on("shot_fired", function(data) {
+		console.log("Received Shot Fired!");
+    socket.broadcast.emit("shot_fired", data);
 	}); 
 
 	socket.on("disconnect", function () {
@@ -67,7 +89,7 @@ io.on('connection', function (socket) {
 });
 
 setInterval(function() {
-		var ammo = generateRandomPlayerLocation(0, 100);
-		ammo.amount = Math.floor(Math.random() * 4) + 3
-		io.emit("ammo_spawn", ammo);
-	}, 7000);
+  var ammo = generateRandomPlayerLocation(0, 100);
+  ammo.amount = Math.floor(Math.random() * 4) + 3
+  io.emit("ammo_spawn", ammo);
+}, 7000);
